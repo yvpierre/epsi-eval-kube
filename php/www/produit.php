@@ -7,14 +7,20 @@
     if (!isset($_GET['id']) or $_GET['id'] == '') {
         header('Location: home.php');
     } else {
-        $PRO_id = mysqli_real_escape_string($link,$_GET['id']);
-        $sql = "SELECT * FROM produits WHERE PRO_id = $PRO_id";
-        $res = mysqli_query($link, $sql);
-        if (mysqli_num_rows($res)  == 0) {
+        $sql = "SELECT * FROM produits WHERE PRO_id = ?";
+        $res = $db->prepare($sql);
+        $res->bindParam(1, $_GET['id']);
+        $res->execute();
+
+        // Vérification de l'existence du produit
+        // Si le produit n'existe pas, on redirige vers la page d'accueil
+        // Si le produit existe, on l'affiche
+        if ($res == false) {
             header('Location: home.php');
         } else {
-            $produit = mysqli_fetch_assoc($res);
-            $prix = number_format($produit['PRO_prix'],2,',',' ');
+            $produit = $res->fetch(PDO::FETCH_ASSOC);
+            $PRO_id = $produit['PRO_id'];
+            $prix = number_format($produit['PRO_prix'], 2, ',', ' ');
         }
     }
 
@@ -49,10 +55,14 @@
         
 
         <?php
-            $sql = "SELECT * FROM ressources WHERE PRO_id = $PRO_id";
-            $res = mysqli_query($link, $sql);
-            if (mysqli_num_rows($res) > 0) {
-                $ressources = mysqli_fetch_all($res,MYSQLI_ASSOC);
+            $sql = "SELECT * FROM ressources WHERE PRO_id = ?";
+            $res = $db->prepare($sql);
+            $res->bindParam(1, $_GET['id']);
+            $res->execute();
+            if ($res == false) {
+                echo "<div class=\"alert alert-danger\">Aucune ressource trouvée</div>";
+            } else {
+                $ressources = $res->fetchAll(PDO::FETCH_ASSOC);
         ?>
 
 

@@ -30,8 +30,12 @@
             <tbody>
                 <?php
                     $sql = "SELECT * FROM produits ORDER BY PRO_lib ASC";
-                    $res = mysqli_query($link, $sql);
-                    while ($produit = mysqli_fetch_assoc($res)) {
+                    $res = $db->query($sql);
+                    if ($res == false) {
+                        echo "<tr><td colspan=\"3\">Aucun produit trouvé</td></tr>";
+                    }
+                    // Affichage des produits
+                    while ($produit = $res->fetch(PDO::FETCH_ASSOC)) {
                         $prix = number_format($produit['PRO_prix'], 2, ',', ' ');
                         
                         echo '<tr onClick="goto(\'produit.php?id='.$produit['PRO_id'].'\')">';

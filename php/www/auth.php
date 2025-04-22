@@ -5,15 +5,17 @@
 
         ini_set('display_errors', '1');
 
-        $US_login = mysqli_real_escape_string($link,$_POST['US_login']);
-        $US_password = mysqli_real_escape_string($link,$_POST['US_password']);
-
-        $sql = "SELECT * FROM utilisateurs WHERE US_login = '$US_login' AND US_password = SHA2('$US_password', 256)";
-        $res = mysqli_query($link,$sql);
+        $sql = "SELECT * FROM utilisateurs WHERE US_login = ? AND US_password = SHA2(?, 256)";
+        $stmt = $db->prepare($sql);
+        $stmt->bindParam(1, $_POST['US_login']);
+        $stmt->bindParam(2, $_POST['US_password']);
+        $stmt->execute();
+        $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
         if ($res != false) {
-            if (mysqli_num_rows($res) > 0) {
+
+            if ( count($res) > 0) {
                 // Utilisateur trouvé dans la base
-                $utilisateur = mysqli_fetch_assoc($res);
+                $utilisateur = $res[0];
                 $_SESSION['login'] = $utilisateur['US_login'];
                 header("Location: home.php");
             } else {

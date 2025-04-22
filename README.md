@@ -1,7 +1,7 @@
 # GESTION PRODUITS
 
 ## Prérequis
-Cette application est compatible `PHP5` et a été testée avec une base de données `MySQL 5.7`.
+Cette application est compatible `PHP8` et a été testée avec une base de données `MySQL 8.4`.
 
 ## Installation
 - Copier les fichiers du dossier `www` dans un dossier accessible par le serveur Web.

@@ -6,17 +6,25 @@
 
     if (isset($_GET['id'])) {
         $action = "modification";
-        $PRO_id = mysqli_real_escape_string($link,$_GET['id']);
+        $PRO_id = $_GET['id'];
 
-        $sql = "SELECT * FROM produits WHERE PRO_id = $PRO_id";
-        $res = mysqli_query($link,$sql);
-        if (mysqli_num_rows($res) == 0) {
+        $sql = "SELECT * FROM produits WHERE PRO_id = ?";
+        $res = $db->prepare($sql);
+        $res->bindParam(1, $PRO_id);
+        $res->execute();
+        if ($res === false) {
             header('Location: home.php');
         } else {
-            $produit = mysqli_fetch_assoc($res);
+            $produit = $res->fetch(PDO::FETCH_ASSOC);
         }
     } else {
         $action = "ajout";
+        $produit = array(
+            'PRO_id' => '',
+            'PRO_lib' => '',
+            'PRO_description' => '',
+            'PRO_prix' => 0
+        );
     }
 
 ?><!DOCTYPE html>
@@ -66,11 +74,13 @@
 
                 <?php
                     if ($action == 'modification') {
-                        $sql = "SELECT * FROM ressources WHERE PRO_id = $PRO_id";
-                        $res = mysqli_query($link,$sql);
-                        if (mysqli_num_rows($res) > 0) {
+                        $sql = "SELECT * FROM ressources WHERE PRO_id = ?";
+                        $res = $db->prepare($sql);
+                        $res->bindParam(1, $PRO_id);
+                        $res->execute();
+                        if ($res != false) {
                             echo "<div>";
-                            while ($ressource = mysqli_fetch_assoc($res)) {
+                            while ($ressource = $res->fetch(PDO::FETCH_ASSOC)) {
                                 if ($ressource['RE_type'] == 'img') {
                                     echo '<div class="img">';
                                     echo '<img src="'.$ressource['RE_url'].'" class="img-thumbnail thumb" data-id="'.$ressource['RE_id'].'">';

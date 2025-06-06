@@ -1,7 +1,7 @@
 <?php
     $host = "db";
-    $username = "root";
-    $password = "root";
+    $username = "user";
+    $password = "pass";
     $db = "gestion_produits";
 
     // Connexion avec pdo mysql

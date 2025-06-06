@@ -1,12 +1,11 @@
-# Utilise une image officielle PHP avec Apache
 FROM php:8.2-apache
 
-# Copie les fichiers sources dans le conteneur
-COPY www/ /var/www/html
+# Enable Apache rewrite module
+RUN a2enmod rewrite
 
-# Donne les permissions nécessaires
+# Install pdo_mysql extension
+RUN docker-php-ext-install pdo_mysql
+
+# Copy your app into the container
+COPY www/ /var/www/html/
 RUN chown -R www-data:www-data /var/www/html
-
-# Expose le port 80
-EXPOSE 80
-

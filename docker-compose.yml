@@ -1,31 +1,28 @@
-version: '3.8'
-
 services:
   web:
-    build: .
+    build: ./php
     ports:
       - "8080:80"
     volumes:
-      - ./www:/var/www/html
+      - ./php/www:/var/www/html
     depends_on:
-      - mysql
+      - db
     environment:
       DB_NAME: gestion_produits
       DB_USER: user
       DB_PASS: pass
     container_name: php-eval-kube
 
-  mysql:
-    image: mysql:8.0
-    restart: always
+  db:
+    build: ./database
+#pour prod    restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: gestion_produits
-      MYSQL_USER: user
-      MYSQL_PASSWORD: pass
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: gestion_produits
+        MYSQL_USER: user
+        MYSQL_PASSWORD: pass
     volumes:
       - mysql_data:/var/lib/mysql
-      - ./database/gestion_produits.sql
     container_name: php-db
 
 volumes:
